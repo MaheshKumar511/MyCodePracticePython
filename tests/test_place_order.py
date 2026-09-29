@@ -1,13 +1,12 @@
 import os
-
 import pytest
+
+from utils.test_data import test_data
 
 
 @pytest.mark.RahulShetty
 @pytest.mark.asyncio
-async def test_place_order_successfully(
-    mahesh_custom_fixture
-):
+async def test_place_order_successfully(mahesh_custom_fixture):
     rahul_shetty = mahesh_custom_fixture.rahul_shetty
 
     email = os.getenv("USER_EMAIL")
@@ -18,15 +17,11 @@ async def test_place_order_successfully(
     await rahul_shetty.login_page.enter_password(password)
     await rahul_shetty.login_page.click_login("Login Successfully")
     await rahul_shetty.login_page.validate_url("/dashboard")
-    await rahul_shetty.login_page.validate_toast_message(
-        "Login Successfully"
-    )
+    await rahul_shetty.login_page.validate_toast_message("Login Successfully")
 
     await rahul_shetty.dashboard_page.click_first_product()
     await rahul_shetty.dashboard_page.add_to_cart()
-    await rahul_shetty.dashboard_page.validate_toast_message(
-        "Product Added To Cart"
-    )
+    await rahul_shetty.dashboard_page.validate_toast_message("Product Added To Cart")
     await rahul_shetty.dashboard_page.go_to_cart()
 
     await rahul_shetty.cart_page.verify_cart_price1()
@@ -35,13 +30,11 @@ async def test_place_order_successfully(
     await rahul_shetty.cart_page.checkout()
 
     await rahul_shetty.checkout_page.select_expiry()
-    await rahul_shetty.checkout_page.enter_cvv("485")
-    await rahul_shetty.checkout_page.enter_card_holder_name("Playwright")
-    await rahul_shetty.checkout_page.enter_country("India")
-    await rahul_shetty.checkout_page.select_country("India")
+    await rahul_shetty.checkout_page.enter_cvv(str(test_data["cvv"]))
+    await rahul_shetty.checkout_page.enter_card_holder_name(test_data["name"])
+    await rahul_shetty.checkout_page.enter_country(test_data["country"])
+    await rahul_shetty.checkout_page.select_country(test_data["country"])
     await rahul_shetty.checkout_page.place_order()
 
-    await rahul_shetty.confirmation_page.validate_toast_message(
-        "Order Placed Successfully"
-    )
+    await rahul_shetty.confirmation_page.validate_toast_message("Order Placed Successfully")
     await rahul_shetty.confirmation_page.verify_order_amount()
